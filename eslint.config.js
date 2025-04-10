@@ -7,9 +7,14 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import importPlugin from 'eslint-plugin-import'
 import jsxA11y from 'eslint-plugin-jsx-a11y'
 import prettier from 'eslint-plugin-prettier/recommended'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url) // get the resolved path to the file
+const __dirname = path.dirname(__filename) // get the name of the directory
 
 export default tseslint.config(
-  { ignores: ['dist'] },
+  { ignores: ['dist', 'vite.config.ts'] },
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
@@ -33,8 +38,16 @@ export default tseslint.config(
         version: 'detect'
       },
       'import/resolver': {
+        node: {
+          paths: ['src'],
+          extensions: ['.js', '.jsx', '.ts', '.d.ts', '.tsx']
+        },
         typescript: {
           project: './tsconfig.json'
+        },
+        alias: {
+          map: [['@', path.resolve(__dirname, './src')]],
+          extensions: ['.js', '.jsx', '.ts', '.d.ts', '.tsx']
         }
       }
     },
@@ -45,6 +58,8 @@ export default tseslint.config(
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
       'jsx-a11y/anchor-is-valid': 'off',
       'react-hooks/exhaustive-deps': 'off',
+      'import/named': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
       'prettier/prettier': [
         'warn',
         {
